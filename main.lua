@@ -94,11 +94,35 @@ function love.update(dt)
             Fong_Ball.dy = -Fong_Ball.dy
         end
         
-        if Fong_Ball.x < 0 then
-            Player_Server  = 1
-            Player_2_Score = Player_2_Score + 1
+        if ball.x < 0 then
+            servingPlayer = 1
+            player2Score = player2Score + 1
 
+            -- if we've reached a score of 10, the game is over; set the
+            -- state to done so we can show the victory message
+            if player2Score == 10 then
+                winningPlayer = 2
+                gameState = 'done'
+            else
+                gameState = 'serve'
+                -- places the ball in the middle of the screen, no velocity
+                ball:reset()
+            end
         end
+
+        if ball.x > VIRTUAL_WIDTH then
+            servingPlayer = 2
+            player1Score = player1Score + 1
+            
+            if player1Score == 10 then
+                winningPlayer = 1
+                gameState = 'done'
+            else
+                gameState = 'serve'
+                ball:reset()
+            end
+        end
+    
     -- player 1 movement
     if love.keyboard.isDown('w') then
         Player_1.y = math.max(0, Player1.y + -PAD_Speed * dt)
@@ -177,4 +201,5 @@ function displayFPS()
     love.graphics.setColor(0, 255, 0, 255)
     love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), VIR_Width - 55, 10)
     love.graphics.setColor(255/255, 255/244, 255/255, 255/255)
+    
 end
