@@ -45,21 +45,15 @@ function love.load()
         canvas    = false
     })
 
-    -- paddle positions on the Y axis (they can only move up or down)
-    Player_1.y = VIR_Height / 2 - 12
-    Player_2.y = VIR_Height / 2 - 12
+    Player_1_Score = 0
+    Player_2_Score = 0
 
-    -- velocity and position variables for our ball when play starts
-    Fong_Ball.x = VIRTUAL_WIDTH / 2 - 5
-    Fong_Ball.y = VIRTUAL_HEIGHT / 2 - 5
+    Player_1       = Paddle_1(10, VIR_Height / 2 - 12, 10, 24)
+    Player_2       = Paddle_2(VIR_Width - 20, VIR_Height / 2 - 12, 10, 24)
 
-    ballDX = math.random(2) == 1 and 100 or -100
-    ballDY = math.random(-50, 50)
+    Fong_Ball      = Box(VIR_Width / 2 - 5, VIR_Height / 2 - 5, 10, 10)
 
-    -- game state variable used to transition between different parts of the game
-    -- (used for beginning, menus, main game, high score list, etc.)
-    -- we will use this to determine behavior during render and update
-    gameState = 'start'
+    Game_State     = 'start'
 end
 
 --[[
@@ -67,6 +61,68 @@ end
     since the last frame, which LÖVE2D supplies us.
 ]]
 function love.update(dt)
+    if Game_State == 'play' then
+        if Fong_Ball:collides(Player_1) then
+            Fong_Ball.dx = -Fong_Ball.dx * 1.07 
+            Fong_Ball.x  = Player_1.x + 10 
+
+            if Fong_Ball.dy < 0 then
+                Fong_Ball.dy = -math.random(10, 150)
+            else
+                Fong_Ball.dy = math.random(10, 150)
+            end
+        end
+
+        if Fong_Ball:collides(Player_2) then
+            Fong_Ball.dx = -Fong_Ball.dx * 1.07 
+            Fong_Ball.x  = Player_2.x - 10
+
+            if Fong_Ball.dy < 0 then
+                Fong_Ball.dy = -math.random(10, 150)
+            else
+                Fong_Ball.dy = math.random(10, 150)
+            end
+        end
+
+        if Fong_Ball.y <= 0 then
+            Fong_Ball.y  = 0
+            Fong_Ball.dy = -Fong_Ball.dy
+        end
+
+        if Fong_Ball.y >= VIR_Height - 30 then
+            Fong_Ball.y  = VIR_Height - 30
+            Fong_Ball.dy = -Fong_Ball.dy
+        end
+        
+        if ball.x < 0 then
+            servingPlayer = 1
+            player2Score = player2Score + 1
+
+            -- if we've reached a score of 10, the game is over; set the
+            -- state to done so we can show the victory message
+            if player2Score == 10 then
+                winningPlayer = 2
+                gameState = 'done'
+            else
+                gameState = 'serve'
+                -- places the ball in the middle of the screen, no velocity
+                ball:reset()
+            end
+        end
+
+        if ball.x > VIRTUAL_WIDTH then
+            servingPlayer = 2
+            player1Score = player1Score + 1
+            
+            if player1Score == 10 then
+                winningPlayer = 1
+                gameState = 'done'
+            else
+                gameState = 'serve'
+                ball:reset()
+            end
+        end
+    
     -- player 1 movement
     if love.keyboard.isDown('w') then
         Player_1.y = math.max(0, Player1.y + -PAD_Speed * dt)
@@ -80,12 +136,14 @@ function love.update(dt)
     elseif love.keyboard.isDown('down') then
         player2Y = math.min(VIR_Height - 20, Player_2.y + PAD_Speed * dt)
     end
-
     
     if gameState == 'play' then
-        Fong_Ball.x = VIRTUAL_WIDTH / 2 - 5 * dt
-        Fong_Ball.y = VIRTUAL_HEIGHT / 2 - 5 * dt
+       Box:update()
     end
+
+    Player_1:update()
+    Player_2:update()
+    
 end
 
 function love.keypressed(key)
@@ -98,11 +156,7 @@ function love.keypressed(key)
         else
             gameState = 'start'
             
-            Fong_Ball.x = VIRTUAL_WIDTH / 2 - 5
-            Fong_Ball.y = VIRTUAL_HEIGHT / 2 - 5
-
-            ballDX = math.random(2) == 1 and 100 or -100
-            ballDY = math.random(-50, 50) * 1.5
+            Fong_Ball:reset()
         end
     end
 end
@@ -121,16 +175,31 @@ function love.draw()
     else
         love.graphics.printf('Hello Play State!', 0, 20, VIR_Width, 'center')
     end
-
+    --display score
+    love.graphics.setFont(SCORE_Font)
+    love.graphics.print(tostring(Player_1_Score), VIR_Width / 2 - 50, 
+        VIR_Height - 53)
+    love.graphics.print(tostring(Player_2_Score), VIR_Width / 2 + 30,
+        VIR_Height - 53)
     -- render first paddle (left side), now using the players' Y variable
-    love.graphics.rectangle('fill', 10, Player_1.y, 10, 24)
 
-    -- render second paddle (right side)
-    love.graphics.rectangle('fill', VIR_Width - 10, Player_2.y, 10, 24)
+    Player_1:render()
+    
+    Player_2:render()
 
-    -- render ball (center)
-    love.graphics.rectangle('fill', Fong_Ball.x, Fong_Ball.y, 10, 10)
+    Fong_Ball:render()
+
+    displayFPS()
 
     -- end rendering at virtual resolution
     push:apply('end')
+end
+
+function displayFPS()
+
+    love.graphics.setFont(s_Font)
+    love.graphics.setColor(0, 255, 0, 255)
+    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), VIR_Width - 55, 10)
+    love.graphics.setColor(255/255, 255/244, 255/255, 255/255)
+    
 end
