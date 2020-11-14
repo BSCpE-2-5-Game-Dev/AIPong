@@ -1,6 +1,6 @@
-Paddle = Class{}
+Paddle_1= Class{}
 
-function Paddle:init(x, y, width, height)
+function Paddle_1:init(x, y, width, height)
 
   self.x = x
   self.y = y
@@ -11,7 +11,7 @@ function Paddle:init(x, y, width, height)
 
 end
 
-function Paddle:update(dt)
+function Paddle_1:update(dt)
 
     if self.dy < 0 then
         self.y = math.max(0, self.y + self.dy * dt)
@@ -22,7 +22,7 @@ function Paddle:update(dt)
 
 end
 
-function Paddle:render()
+function Paddle_1:render()
 
     love.graphics.draw(self.img, self.x, self.y)
 
