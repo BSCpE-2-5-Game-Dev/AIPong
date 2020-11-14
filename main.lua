@@ -37,11 +37,18 @@ function love.load()
     SCORE_Font = love.graphics.newFont('font.ttf', 32)
     love.graphics.setFont(s_Font)
 
+    sounds = {
+        ['paddleHit'] = love.audio.newSource('sounds/paddleHit.wav', 'static'),
+        ['scoreHit']  = love.audio.newSource('sounds/scoreHit.wav', 'static'),
+        ['wallHit']   = love.audio.newSource('sounds/wallHit.wav', 'static'),
+        ['victory']   = love.audio.newSource('sounds/victory.wav', 'static')
+    }
+    
     -- initialize window with virtual resolution
     push:setupScreen(VIR_Width, VIR_Height, WIN_Width, WIN_Height, {
         fullscrn  = false,
         resizable = true,
-        V_sync    = true, 
+        V_sync    = true,
         canvas    = false
     })
 
@@ -63,14 +70,14 @@ function love.load()
 end
 
 --[[
-    Runs every frame, with "dt" passed in, our delta in seconds 
+    Runs every frame, with "dt" passed in, our delta in seconds
     since the last frame, which LÖVE2D supplies us.
 ]]
 function love.update(dt)
     -- player 1 movement
     if love.keyboard.isDown('w') then
         Player_1.y = math.max(0, Player1.y + -PAD_Speed * dt)
-    elseif love.keyboard.isDown('s') then       
+    elseif love.keyboard.isDown('s') then
         Player1.y = math.min(VIR_Height - 20, Player_1.y + PAD_Speed * dt)
     end
 
@@ -81,7 +88,7 @@ function love.update(dt)
         player2Y = math.min(VIR_Height - 20, Player_2.y + PAD_Speed * dt)
     end
 
-    
+
     if gameState == 'play' then
         Fong_Ball.x = VIRTUAL_WIDTH / 2 - 5 * dt
         Fong_Ball.y = VIRTUAL_HEIGHT / 2 - 5 * dt
@@ -97,7 +104,7 @@ function love.keypressed(key)
             gameState = 'play'
         else
             gameState = 'start'
-            
+
             Fong_Ball.x = VIRTUAL_WIDTH / 2 - 5
             Fong_Ball.y = VIRTUAL_HEIGHT / 2 - 5
 
@@ -108,7 +115,7 @@ function love.keypressed(key)
 end
 
 function love.draw()
-    
+
     push:apply('start')
 
     love.graphics.clear(40, 45, 52, 255)

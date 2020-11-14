@@ -1,12 +1,13 @@
 Box = Class{}
 
 function Box:init(x, y, width, height)
-    self.x = x
-    self.y = y
-    self.width = width
-    self.height = height
-    self.dy = 0
-    self.dx = 0
+  self.x = x
+  self.y = y
+  self.img = love.graphics.newImage('assets/Ball.png')
+  self.width = self.img:getWidth()
+  self.height = self.img:getHeight()
+  self.dy = 0
+  self.dx = 0
 end
 
 function Box:collides(paddle)
@@ -16,7 +17,7 @@ function Box:collides(paddle)
 
     if self.y > paddle.y + paddle.height or paddle.y > self.y + self.height then
         return false
-    end 
+    end
 
     return true
 end
@@ -34,5 +35,5 @@ function Box:update(dt)
 end
 
 function Box:render()
-    love.graphics.rectangle('fill', self.x,self.y, 0, self.width,self height)
+    love.graphics.draw(self.img, self.x, self.y)
 end
