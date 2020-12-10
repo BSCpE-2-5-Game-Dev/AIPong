@@ -49,9 +49,7 @@ VIRTUAL_HEIGHT = 243
 
 -- paddle movement speed
 PADDLE_SPEED = 200
--- lower ai paddle movement
--- for a higher player chance of winning
-AIPADDLE_SPEED = 100
+
 --[[
     Called just once at the beginning of the game; used to set up
     game objects, variables, etc. and prepare the game world.
@@ -349,9 +347,9 @@ function love.update(dt)
 
         -- player 2
         if player2.y > ball.y + ball.height  then
-            player2.dy = -(AIPADDLE_SPEED + 50)
+            player2.dy = -(PADDLE_SPEED - 85)
         elseif player2.y + player2.height < ball.y + ball.height  then
-            player2.dy = AIPADDLE_SPEED + 50
+            player2.dy = PADDLE_SPEED - 85
         else
            player2.dy = 0
         end
@@ -360,18 +358,18 @@ function love.update(dt)
         -- faster paddle speed
         -- random so that both ai can score
         if player1.y > ball.y + ball.height  then
-            player1.dy = -math.random(AIPADDLE_SPEED, AIPADDLE_SPEED * 2.5)
+            player1.dy = -(PADDLE_SPEED - 80)
          elseif player1.y + player1.height < ball.y + ball.height  then
-            player1.dy = math.random(AIPADDLE_SPEED, AIPADDLE_SPEED * 2.5)
+            player1.dy = AIPADDLE_SPEED - 80
          else
             player1.dy = 0
          end
 
         -- player2 is ai 
         if player2.y > ball.y + ball.height  then
-            player2.dy = -math.random(AIPADDLE_SPEED, AIPADDLE_SPEED * 2.5)
+            player2dy = -(PADDLE_SPEED - 80)
         elseif player2.y + player2.height < ball.y + ball.height  then
-            player2.dy = math.random(AIPADDLE_SPEED, AIPADDLE_SPEED * 2.5)
+            player2. = PADDLE_SPEED - 80
         else
            player2.dy = 0
         end
@@ -492,11 +490,11 @@ function love.draw()
                 0, 10, VIRTUAL_WIDTH, 'center')
             love.graphics.printf('Press Enter to serve!', 0, 20, VIRTUAL_WIDTH, 'center')
         elseif gameMode == 'pvc' then
-            if servingPlayer == '1' then
+            if servingPlayer == 1 then
                 love.graphics.setFont(smallFont)
                 love.graphics.printf('You are going to serve!', 0, 10, VIRTUAL_WIDTH, 'center')
                 love.graphics.printf('Press Enter to serve!', 0, 20, VIRTUAL_WIDTH, 'center')
-            elseif servingPlayer == '2' then
+            elseif servingPlayer == 2 then
                 love.graphics.setFont(smallFont)
                 love.graphics.printf("Computer's serve!", 0, 10, VIRTUAL_WIDTH, 'center')
                 love.graphics.printf('Press Enter to start', 0, 20, VIRTUAL_WIDTH, 'center')
@@ -516,12 +514,12 @@ function love.draw()
             love.graphics.setFont(smallFont)
             love.graphics.printf('Press Enter to restart!', 0, 30, VIRTUAL_WIDTH, 'center')
         elseif gameMode == 'pvc' then
-            if winningPlayer == '1' then
+            if winningPlayer == 1 then
                 love.graphics.setFont(largeFont)
                 love.graphics.printf('You win!', 0, 10, VIRTUAL_WIDTH, 'center')
                 love.graphics.setFont(smallFont)
                 love.graphics.printf('Press Enter to restart!', 0, 30, VIRTUAL_WIDTH, 'center')
-            elseif winningPlayer == '2' then
+            elseif winningPlayer == 2 then
                 love.graphics.setFont(largeFont)
                 love.graphics.printf('Computer wins!', 0, 10, VIRTUAL_WIDTH, 'center')
                 love.graphics.setFont(smallFont)
