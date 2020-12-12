@@ -61,7 +61,7 @@ function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
     -- set the title of our application window
-    love.window.setTitle('Pong')
+    love.window.setTitle('AI_Pong')
 
     -- seed the RNG so that calls to random are always random
     math.randomseed(os.time())
